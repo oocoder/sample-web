@@ -1,0 +1,31 @@
+{
+  "name": "sample-web",
+  "description": "Sample node.js server",
+  "version": "0.0.1",
+  "author": {
+    "name": "Alex R Maldonado",
+    "email": "calidadis@gmail.com"
+  },
+  "repository": {
+	"type": "git",
+    "url": "https://github.com/oocoder/sample-web.git"
+  },
+  "directories": {
+    "lib": "./lib/"
+  },
+  "engines": {
+    "node": ">=0.10.26"
+  },
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "https://github.com/oocoder/sample-web/LICENSE"
+    }
+  ],
+  "readme": "Sample node.js web server",
+  "readmeFilename": "README.md",
+  "bugs": {
+    "url": "https://github.com/oocoder/sample-web/issues"
+  },
+  "homepage": "https://github.com/oocoder/sample-web"
+}
