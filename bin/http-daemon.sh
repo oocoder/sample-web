@@ -1,8 +1,14 @@
 #!/usr/bin/env node
-
+    
 /**
  * bin/http-daemon.sh
+ * Copy this script from DigitalOcean help pages.  Modified to start
+ * server.js instead. 
  */
+
+// var fs = require('fs'),
+ // out = fs.openSync('./out.log', 'a'),
+ // err = fs.openSync('./out.log', 'a');
 
 // Everything above this line will be executed twice
 require('daemon')();
@@ -17,19 +23,20 @@ var numCPUs = require('os').cpus().length;
  * Runs the HTTP server otherwise.
  */
 function createWorker() {
-  if (cluster.isMaster) {
-    // Fork a worker if running as cluster master
-    var child = cluster.fork();
+    
+    if (cluster.isMaster) {
+        // Fork a worker if running as cluster master
+        var child = cluster.fork();
 
-    // Respawn the child process after exit
-    // (ex. in case of an uncaught exception)
-    child.on('exit', function (code, signal) {
-      createWorker();
-    });
-  } else {
-    // Run the HTTP server if running as worker
-    require('../lib/app');
-  }
+        // Respawn the child process after exit
+        // (ex. in case of an uncaught exception)
+        child.on('exit', function (code, signal) {
+            createWorker();
+        });
+    } else {
+        // Run the HTTP server if running as worker
+        require('../server');
+    }
 }
 
 /**
@@ -37,9 +44,9 @@ function createWorker() {
  * @param  {Number} n Number of workers to create.
  */
 function createWorkers(n) {
-  while (n-- > 0) {
-    createWorker();
-  }
+    while (n-- > 0) {
+        createWorker();
+    }
 }
 
 /**
@@ -49,32 +56,33 @@ function createWorkers(n) {
  * @param  {Number} signal
  */
 function killAllWorkers(signal) {
-  var uniqueID,
+    var uniqueID,
       worker;
 
-  for (uniqueID in cluster.workers) {
-    if (cluster.workers.hasOwnProperty(uniqueID)) {
-      worker = cluster.workers[uniqueID];
-      worker.removeAllListeners();
-      worker.process.kill(signal);
+    for (uniqueID in cluster.workers) {
+        if (cluster.workers.hasOwnProperty(uniqueID)) {
+            worker = cluster.workers[uniqueID];
+            worker.removeAllListeners();
+            worker.process.kill(signal);
+        }
     }
-  }
 }
 
 /**
  * Restarts the workers.
  */
 process.on('SIGHUP', function () {
-  killAllWorkers('SIGTERM');
-  createWorkers(numCPUs * 2);
+    killAllWorkers('SIGTERM');
+    createWorkers(numCPUs * 2);
 });
 
 /**
  * Gracefully Shuts down the workers.
  */
 process.on('SIGTERM', function () {
-  killAllWorkers('SIGTERM');
+    killAllWorkers('SIGTERM');
 });
 
 // Create two children for each CPU
 createWorkers(numCPUs * 2);
+

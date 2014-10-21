@@ -1,17 +1,31 @@
 {
   "name": "sample-web",
-  "description": "Sample node.js server",
   "version": "0.0.1",
-  "author": {
-    "name": "Alex R Maldonado",
-    "email": "calidadis@gmail.com"
+  "description": "Sample web server",
+  "main": "server.js",
+  "bin": {
+    "sample-web": "http-daemon.js"
+  },
+  "dependencies": {
+    "daemon": "^1.1.0",
+    "mocha": "^1.21.5"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error no tests specifed\" && exit 1",
+    "start": "node server.js"
   },
   "repository": {
     "type": "git",
     "url": "https://github.com/oocoder/sample-web.git"
   },
-  "directories": {
-    "lib": "./lib/"
+  "keywords": [
+    "simple",
+    "webserver"
+  ],
+  "author": {
+    "name": "Alex R Maldonado",
+    "email": "calidadis@gmail.com"
   },
   "engines": {
     "node": ">=0.10.26"
@@ -22,13 +36,8 @@
       "url": "https://github.com/oocoder/sample-web/LICENSE"
     }
   ],
-  "readme": "Sample node.js web server",
-  "readmeFilename": "README.md",
   "bugs": {
     "url": "https://github.com/oocoder/sample-web/issues"
   },
-  "homepage": "https://github.com/oocoder/sample-web",
-  "dependencies": {
-    "daemon": "^1.1.0"
-  }
+  "homepage": "https://github.com/oocoder/sample-web"
 }
