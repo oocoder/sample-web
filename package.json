@@ -3,9 +3,6 @@
   "version": "0.0.2",
   "description": "Sample web server",
   "main": "server.js",
-  "bin": {
-    "sample-web": "http-daemon.sh"
-  },
   "dependencies": {
     "daemon": "^1.1.0"
    },
