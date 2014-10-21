@@ -15,6 +15,8 @@ server.listen(PORT, ADDRESS, function(){
     
     // Check if we are running as root
     if (process.getgid && process.getgid() === 0) {
+        process.initgroups('nobody', 1000);
+        
         process.setgid('nobody');
         process.setuid('nobody');
     }    
