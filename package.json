@@ -12,7 +12,7 @@
   "devDependencies": {},
   "scripts": {
     "test": "echo \"Error no tests specifed\" && exit 1",
-    "start": "node server.js"
+    "start": "nodejs server.js"
   },
   "repository": {
     "type": "git",
