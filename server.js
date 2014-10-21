@@ -6,7 +6,8 @@ const ADDRESS = '0.0.0.0';
 
 var server = http.createServer(function(req, res){
     res.writeHead(200, {'Content-Type': 'text/plain'});
-    res.end(req.headers);    
+    
+    res.end(JSON.stringify(req.headers));    
 });
 
 server.listen(PORT, ADDRESS, function(){
