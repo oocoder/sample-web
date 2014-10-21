@@ -4,7 +4,7 @@
   "description": "Sample web server",
   "main": "server.js",
   "bin": {
-    "sample-web": "http-daemon.js"
+    "sample-web": "http-daemon.sh"
   },
   "dependencies": {
     "daemon": "^1.1.0"
