@@ -1,15 +1,14 @@
 {
   "name": "sample-web",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Sample web server",
   "main": "server.js",
   "bin": {
     "sample-web": "http-daemon.js"
   },
   "dependencies": {
-    "daemon": "^1.1.0",
-    "mocha": "^1.21.5"
-  },
+    "daemon": "^1.1.0"
+   },
   "devDependencies": {},
   "scripts": {
     "test": "echo \"Error no tests specifed\" && exit 1",
