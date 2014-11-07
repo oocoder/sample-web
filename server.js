@@ -46,7 +46,8 @@ function HandleBuildReq( body ){
     
     var data;
     try{
-        data = JSON.parse(body);
+        //data = JSON.parse(body);
+        data = query.parse( body);
     }catch( err ) {
         console.error('Invalid parse', err, 'object:', body);
     }
