@@ -43,8 +43,14 @@ var server = http.createServer(function(req, res){
 });
 
 function HandleBuildReq( body ){
-    var data = JSON.parse(body);
-
+    
+    var data;
+    try{
+        data = JSON.parse(body);
+    }catch( err ) {
+        console.error('Invalid parse', err, 'object:', body);
+    }
+    
     //TODO: Need to find a good url parser regex
     var projurl = data.repository.absolute_url.split('/');
     var projname = projurl[projurl.length-1] == '' ? projurl[projurl.length-2] : 
