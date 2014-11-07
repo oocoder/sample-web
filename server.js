@@ -48,16 +48,17 @@ function HandleBuildReq( body ){
     try{
         //data = JSON.parse(body);
         data = query.parse( body);
+    
+        //TODO: Need to find a good url parser regex
+        var projurl = data.repository.absolute_url.split('/');
+        var projname = projurl[projurl.length-1] == '' ? projurl[projurl.length-2] : 
+            projurl[projurl.length-1];    
+        
+        console.log('building project:', projname );
+
     }catch( err ) {
-        console.error('Invalid parse', err, 'object:', body);
+        console.error('Invalid parse', err, 'object:', body, 'data:', data);
     }
-    
-    //TODO: Need to find a good url parser regex
-    var projurl = data.repository.absolute_url.split('/');
-    var projname = projurl[projurl.length-1] == '' ? projurl[projurl.length-2] : 
-        projurl[projurl.length-1];    
-    
-    console.log('building project:', projname );
     
     // var buildProjFunc = BuildProjectFunc.create(projname);
     
