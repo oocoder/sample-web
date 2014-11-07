@@ -47,7 +47,7 @@ function HandleBuildReq( body ){
     var data;
     try{
         //data = JSON.parse(body);
-        data = query.parse( body);
+        data = JSON.parse(query.parse(body).payload);
     
         //TODO: Need to find a good url parser regex
         var projurl = data.repository.absolute_url.split('/');
@@ -55,6 +55,7 @@ function HandleBuildReq( body ){
             projurl[projurl.length-1];    
         
         console.log('building project:', projname );
+        console.log('data:', data);
 
     }catch( err ) {
         console.error('Invalid parse', err, 'object:', body, 'data:', data);
