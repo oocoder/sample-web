@@ -1,10 +1,16 @@
 // server.js - simple node.js web server
-var http = require('http');
+var http = require('https')
+    , fs = require('fs');
 
-const PORT = process.env.PORT || 80;
+var options = {
+    key: fs.readFileSync('./keys/domain.key'),
+    cert: fs.readFileSync('./keys/domain.crt')
+};   
+    
+const PORT = process.env.PORT || 443;
 const ADDRESS = '0.0.0.0';
 
-var server = http.createServer(function(req, res){
+var server = http.createServer(options, function(req, res){
     res.writeHead(200, {'Content-Type': 'text/plain'});
     
     res.end(JSON.stringify(req.headers));    
