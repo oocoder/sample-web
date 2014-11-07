@@ -7,8 +7,10 @@
     "http-daemon": "./bin/http-daemon.sh"
   },
   "dependencies": {
-    "daemon": "^1.1.0"
-   },
+    "daemon": "^1.1.0",
+    "superagent": "^0.20.0",
+    "mocha": "^2.0.0"
+  },
   "devDependencies": {},
   "scripts": {
     "test": "echo \"Error no tests specifed\" && exit 1",
