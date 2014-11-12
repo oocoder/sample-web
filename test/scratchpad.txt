@@ -1,0 +1,8 @@
+RUN mkdir $HOME/src/app
+WORKDIR $HOME/src/app
+RUN git clone git@bitbucket.org:oocoder/pensi-worker.git
+
+ssh -i "%HOME%/.ssh/id_boot2docker" docker@192.168.59.103 "docker build -t pensi-worker < cat "
+
+https://pensi.me:5414/build/pensi-worker/123456
+

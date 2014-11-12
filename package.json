@@ -8,8 +8,11 @@
   },
   "dependencies": {
     "daemon": "^1.1.0",
-    "superagent": "^0.20.0",
-    "mocha": "^2.0.0"
+    "deasync": "0.0.7",
+    "fs-extra": "^0.12.0",
+    "mocha": "^2.0.0",
+    "pem": "^1.4.1",
+    "superagent": "^0.20.0"
   },
   "devDependencies": {},
   "scripts": {

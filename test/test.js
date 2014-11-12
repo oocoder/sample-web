@@ -1,7 +1,16 @@
 // test.js - Test build api 
 var request = require('superagent');
+var querystring = require('querystring');
+const port = "5414";
+const ipAddr = "localhost";
 
-const  payload = {
+// TODO: Superagent needs to find a better way to handle this
+// for development sake! 
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
+
+// curl --data @bb.post http://127.0.0.1/build
+
+const  data = { 
     "canon_url": "https://bitbucket.org",
     "commits": [
         {
@@ -37,14 +46,24 @@ const  payload = {
         "website": ""
     },
     "user": "oocoder"
-}  
+}
 
+// process.on('SIGINT', OnClosingHandler); // in case user CTRL-C or Z
+// process.on('SIGTERM', OnClosingHandler);
+process.on('uncaughtException', function(err){ console.error('failed to send request', err)  });
+
+
+
+var payload = querystring.stringify({payload : JSON.stringify(data)}); 
+
+var url = 'https://' + ipAddr + ':' + port + '/build/1223455';
+console.log('Sending Bitbucket test payload to:', url);
 request
-    .post('http://pensi.me/build')
+    .post(url)
     .send(payload)
     .set('Accept', '*/*')
+    .set('Content-Type', 'application/x-www-form-urlencoded')
     .set('User-Agent', 'Test Build Functionality')
     .end(function(res){
         console.log(res.text);
     });
-    

@@ -1,20 +1,22 @@
 // server.js - simple node.js web server
-var http = require('http');
+var http = require('https');
 var url = require('url');
 var query = require('querystring');
 
-const webHookId = "4455661234";
+//process.on('uncaughtException', function(err){ console.error(err)  });
 
-// var fs = require('fs');
-// var options = {
-    // key: fs.readFileSync('./keys/domain.key'),
-    // cert: fs.readFileSync('./keys/domain.crt')
-// };   
-    
-const PORT = process.env.PORT || 80;
+var fs = require('fs');
+var options = {
+    key: fs.readFileSync('./config/key.pem'),
+    cert: fs.readFileSync('./config/csr.pem')
+};   
+
+const PORT = process.env.PORT || 5414;
 const ADDRESS = '0.0.0.0';
 var fullBody = "";
-var server = http.createServer(function(req, res){
+
+var server = http.createServer(options, function(req, res){
+
     // We are only handling post methods for now
     if(req.method !== 'POST'){
         console.error("[405] " + req.method + " to " + req.url);
@@ -27,35 +29,32 @@ var server = http.createServer(function(req, res){
     req.on('data', function( chunk ){ fullBody+=chunk });
     req.on('end', function(){
         var query = url.parse(req.url, true);
-                
+        
         // Call Build Handler 
-        if(query.path == '/build'){
+        if(query.pathname == '/build'){
             HandleBuildReq(fullBody);
         }
         
         // Return 'OK'
         res.writeHead(200, {'Content-Type': 'text/plain'});
-        //JSON.stringify(req.headers)
-        res.end(fullBody);
-        
+        res.end('request accepted: ok');
     });
-    
 });
 
 function HandleBuildReq( body ){
     
     var data;
     try{
-        //data = JSON.parse(body);
-        data = JSON.parse(query.parse(body).payload);
-    
+        var qry = query.parse(body).payload;
+        data = JSON.parse(qry);
+
         //TODO: Need to find a good url parser regex
         var projurl = data.repository.absolute_url.split('/');
         var projname = projurl[projurl.length-1] == '' ? projurl[projurl.length-2] : 
             projurl[projurl.length-1];    
         
         console.log('building project:', projname );
-        console.log('data:', data);
+        //console.log('data:', data);
 
     }catch( err ) {
         console.error('Invalid parse', err, 'object:', body, 'data:', data);
@@ -73,7 +72,7 @@ server.listen(PORT, ADDRESS, function(){
     console.log('Server running at http://%s:%d/', ADDRESS, PORT);
     console.log('Press CTRL+C to exit');
     
-    // Check if we are running as root
+    // Remove Root access rights
     if (process.getgid && process.getgid() === 0) {
         process.initgroups('nobody', 1000);
         process.setgid(1000);
