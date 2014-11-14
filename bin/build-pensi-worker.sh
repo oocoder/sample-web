@@ -48,8 +48,9 @@ cmdQueue.push(function(cb){
 
 // Save Docker image
 cmdQueue.push(function(cb){
-    var imageFilename = path.join(path.resolve(__dirname,  dockImgsPath), 
-        util.format('%s-v%s%s', source, version, '.tar.gz');
+    var imageFilename = path.join(
+        path.resolve(__dirname,  dockImgsPath), 
+        util.format('%s-v%s%s', source, version, '.tar.gz') );
     execSync(util.format('sudo docker save %s | gzip > %s', tag, imageFilename), 
         {}, cb);
 });
