@@ -7,7 +7,7 @@ var util = require('util');
 
 var source = 'pensi-worker';
 var gitUrl = 'git@bitbucket.org:oocoder/pensi-worker.git';
-
+var dockImgsPath = '../dock-images';
 //process.on('uncaughtException', function(err){ console.error(err)  });
 
 console.log('Starting build process for module:', source);
@@ -31,7 +31,7 @@ var tag = "";
 cmdQueue.push(function(cb){
     try{
         var pkg = require(path.join(workPath, source, 'package.json'));
-        tag = util.format('%s/%s', source.replace(/\./g, '_').replace(/-/g, '_'), 
+        tag = util.format('%s:%s', source.replace(/\./g, '_').replace(/-/g, '_'), 
             pkg.version);
         cb(null, {tag: tag, code: 0});
     } catch(e) { cb(e) }
@@ -44,6 +44,15 @@ cmdQueue.push(function(cb){
         {cwd: path.join(workPath, source)}, cb);
 });
 
+// Save Docker image
+cmdQueue.push(function(cb){
+    var imageFilename = path.join(dockImgsPath, source);
+    execSync(util.format('sudo docker save  -o %s %s', imageFilename, tag), 
+        {}, cb);
+});
+
+
+// Run all commands
 processDataAll(cmdQueue, function(err, rs){
     if(err){ console.error(err); console.log('\nBuild failed') }
     else console.log('Build successful');
