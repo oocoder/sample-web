@@ -2,6 +2,7 @@
 var os = require('os');
 var path = require('path');
 var fs = require('fs-extra');
+var util = require('util');
 //var cmdQueue = require('queue')({timeout: 100});
 
 var source = 'pensi-worker';
@@ -25,9 +26,21 @@ cmdQueue.push(function(cb){
     execSync('git clone ' + gitUrl, {}, cb);
 });
 
+// Get tag name 
+var tag = "";
+cmdQueue.push(function(cb){
+    try{
+        var pkg = require(path.join(workPath, source, 'package.json'));
+        tag = util.format('%s/%s', source, pkg.version);
+        cb(null, {tag: tag, code: 0});
+    } catch(e) { cb(e) }
+});
+
+
 // Run Docker to support the rest of the build process
 cmdQueue.push(function(cb){
-    execSync('sudo docker build .', {cwd: path.join(workPath, source)}, cb);
+    execSync(util.format('sudo docker build --force-rm=true -t \"%s\" .', tag), 
+        {cwd: path.join(workPath, source)}, cb);
 });
 
 processDataAll(cmdQueue, function(err, rs){
