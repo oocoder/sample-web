@@ -4,7 +4,7 @@
 mkdir $HOME/src/app \
 cd $HOME/src/app \
 git clone git@bitbucket.org:oocoder/pensi-worker.git \
-sudo docker build -t pensi-worker/alpha-0.0.1 .
+sudo docker build -t pensi-worker/0_0_0
 
     
 WORKDIR $HOME/src/app
