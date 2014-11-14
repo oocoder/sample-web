@@ -46,13 +46,13 @@ cmdQueue.push(function(cb){
 
 // Save Docker image
 cmdQueue.push(function(cb){
-    var imageFilename = path.join(dockImgsPath, source);
-    execSync(util.format('sudo docker save  -o %s %s', imageFilename, tag), 
+    var imageFilename = path.join(path.resolve(dockImgsPath), source+'.tar');
+    execSync(util.format('sudo docker save %s | gzip > %s', imageFilename, tag), 
         {}, cb);
 });
 
 
-// Run all commands
+// Run all commands ////////////////////
 processDataAll(cmdQueue, function(err, rs){
     if(err){ console.error(err); console.log('\nBuild failed') }
     else console.log('Build successful');
