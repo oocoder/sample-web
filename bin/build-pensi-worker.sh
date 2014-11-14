@@ -32,10 +32,10 @@ var version = "";
 cmdQueue.push(function(cb){
     try{
         var pkg = require(path.join(workPath, source, 'package.json'));
-        version = pkg.version.replace(/\./g, '_');
+        version = pkg.version;
         tag = util.format('%s:%s', source.replace(/\./g, '_').replace(/-/g, '_'), 
             pkg.version);
-        cb(null, {tag: tag, code: 0});
+        cb(null, {tag: tag, version: version, code: 0});
     } catch(e) { cb(e) }
 });
 
