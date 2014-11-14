@@ -7,7 +7,7 @@ var util = require('util');
 
 var source = 'pensi-worker';
 var gitUrl = 'git@bitbucket.org:oocoder/pensi-worker.git';
-var dockImgsPath = '../dock-images';
+var dockImgsPath = '../images';
 //process.on('uncaughtException', function(err){ console.error(err)  });
 
 console.log('Starting build process for module:', source);
@@ -47,7 +47,7 @@ cmdQueue.push(function(cb){
 // Save Docker image
 cmdQueue.push(function(cb){
     var imageFilename = path.join(path.resolve(dockImgsPath), source+'.tar');
-    execSync(util.format('sudo docker save %s | gzip > %s', imageFilename, tag), 
+    execSync(util.format('sudo docker save %s | gzip > %s', tag, imageFilename), 
         {}, cb);
 });
 
