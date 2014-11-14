@@ -32,7 +32,7 @@ var version = "";
 cmdQueue.push(function(cb){
     try{
         var pkg = require(path.join(workPath, source, 'package.json'));
-        version = pkg.version;
+        version = pkg.version.replace(/\./g, '_');
         tag = util.format('%s:%s', source.replace(/\./g, '_').replace(/-/g, '_'), 
             pkg.version);
         cb(null, {tag: tag, code: 0});
@@ -48,7 +48,8 @@ cmdQueue.push(function(cb){
 
 // Save Docker image
 cmdQueue.push(function(cb){
-    var imageFilename = path.join(path.resolve(__dirname,  dockImgsPath), source+'.tgz');
+    var imageFilename = path.join(path.resolve(__dirname,  dockImgsPath), 
+        util.format('%s-v%s%s', source, version, '.tar.gz');
     execSync(util.format('sudo docker save %s | gzip > %s', tag, imageFilename), 
         {}, cb);
 });
