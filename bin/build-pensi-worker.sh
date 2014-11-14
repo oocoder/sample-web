@@ -2,6 +2,7 @@
 var os = require('os');
 var path = require('path');
 var fs = require('fs-extra');
+//var cmdQueue = require('queue')({timeout: 100});
 
 var source = 'pensi-worker';
 var gitUrl = 'git@bitbucket.org:oocoder/pensi-worker.git';
@@ -17,15 +18,37 @@ try { fs.mkdirsSync(workPath) } catch(e) { console.error(e) } // create dir
 try { process.chdir(workPath) } catch(e) { console.error(e) } // cd path
 
 console.log('working path:', workPath);
+var cmdQueue = [];
 
-var cmdToExec = [];
-cmdToExec.push(function(){ 
-    return execSync('git clone ' + gitUrl);
+// Get sources from repo
+cmdQueue.push(function(cb){ 
+    execSync('git clone ' + gitUrl, {}, cb);
 });
 
-cmdToExec.push(function(){ 
-    return execSync('sudo docker build .', {cwd: path.join(workPath, source)});
+// Run Docker to support the rest of the build process
+cmdQueue.push(function(cb){
+    execSync('sudo docker build .', {cwd: path.join(workPath, source)}, cb);
 });
+
+processDataAll(cmdQueue, function(err, rs){
+    if(err){ console.error(err); console.log('\nBuild failed') }
+    else console.log('Build successful');
+});
+
+// cmdQueue.start(function(err, results){
+    // if(err) return console.error('Build failed:', err);
+    
+    // console.log('Build successful');
+// });
+
+// var cmdToExec = [];
+// cmdToExec.push(function(){ 
+    // return execSync('git clone ' + gitUrl);
+// });
+
+// cmdToExec.push(function(){ 
+    // return execSync('sudo docker build .', {cwd: path.join(workPath, source)});
+// });
 // cmdToExec.push(function(){ 
     // return execSync('npm install', {cwd: path.join(workPath, source)});
 // });
@@ -34,17 +57,45 @@ cmdToExec.push(function(){
     // return execSync('npm test', {cwd: path.join(workPath, source)});
 // });
 
-cmdToExec.forEach(function(run){
-    var rt = run();
-    if(rt.code != 0) return console.error(rt.output);
-});
+// cmdToExec.forEach(function(run){
+    // var rt = run();
+    // if(rt.code != 0) return console.error(rt.output);
+// });
 
 
 // UTILS FUNCTIONS /////////////////////
-function execSync( cmd ){
+
+// Process a series of actions by linking each one until completed
+function processDataAll(requests, done){
+    _processDataAll(requests, {}, done);
+}
+
+function _processDataAll(requests, rs, done){
+	var req = requests.shift();
+	if(req == undefined) return done(null, rs); // success
+
+    process.nextTick(function(){
+        try{
+            req(function(err, rs){
+                if(err) return done(err, rs);
+                
+                if(rs.code != 0) 
+                    return done(new Error('non-zero exit code. code:' + 
+                        rs.code + ', output: ' + rs.output));
+                        
+                _processDataAll(requests.slice(0), rs, done);
+            });
+        } catch(e) { return done(e) }
+    });
+}
+
+
+function execSync( cmd, opts, callback ){
     console.log('-->', cmd);
     var cp = require('child_process');
-    var child = cp.exec.apply(cp, arguments);
+    
+//    var child = cp.exec.apply(cp, arguments);
+    var child = cp.exec(cmd, opts);
     var data = "", code, signal, done = false;
     var ondata = function( chunk ){ data+=chunk };
      
@@ -52,18 +103,24 @@ function execSync( cmd ){
     // child.stdout.on('data', ondata);
     child.stderr.setEncoding('utf8');
     child.stderr.on('data', ondata);
+    child.once('error', function( err ){     
+        child.stderr.removeListener('data', ondata);
+        child.removeAllListeners('close');
+        callback(err); 
+    });
     
     child.once('close', function( c, s ){
         //child.stdout.removeListener('data', ondata);
         child.stderr.removeListener('data', ondata);
         code = c;
         signal = s;
-        done = true;
+        //done = true;
+        callback(null, {cmd: cmd, output: data, code: code, signal: signal});
     });
     
-    while(!done) { require('deasync').runLoopOnce() }
+    //while(!done) { require('deasync').runLoopOnce() }
     
-    return {cmd: cmd, output: data, code: code, signal: signal};
+//    return {cmd: cmd, output: data, code: code, signal: signal};
 }
 
 

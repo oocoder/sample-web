@@ -52,8 +52,6 @@ const  data = {
 // process.on('SIGTERM', OnClosingHandler);
 process.on('uncaughtException', function(err){ console.error('failed to send request', err)  });
 
-
-
 var payload = querystring.stringify({payload : JSON.stringify(data)}); 
 
 var url = 'https://' + ipAddr + ':' + port + '/build/1223455';

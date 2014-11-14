@@ -1,8 +1,16 @@
-RUN mkdir $HOME/src/app
-WORKDIR $HOME/src/app
-RUN git clone git@bitbucket.org:oocoder/pensi-worker.git
+# Script to build docker images that can be pushed to prod
+#
 
-ssh -i "%HOME%/.ssh/id_boot2docker" docker@192.168.59.103 "docker build -t pensi-worker < cat "
+mkdir $HOME/src/app \
+cd $HOME/src/app \
+git clone git@bitbucket.org:oocoder/pensi-worker.git \
+sudo docker build -t pensi-worker/alpha-0.0.1 .
+
+    
+WORKDIR $HOME/src/app
+
+
+ssh -i "%HOME%/.ssh/id_boot2docker" docker@192.168.59.103 "docker build -t pensi-worker/v0.0.8 < cat "
 
 https://pensi.me:5414/build/pensi-worker/123456
 
