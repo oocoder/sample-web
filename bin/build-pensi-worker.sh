@@ -31,7 +31,7 @@ var tag = "";
 cmdQueue.push(function(cb){
     try{
         var pkg = require(path.join(workPath, source, 'package.json'));
-        tag = util.format('%s/%s', source, pkg.version.replace(/\./g, '_');
+        tag = util.format('%s/%s', source, pkg.version.replace(/\./g, '_'));
         cb(null, {tag: tag, code: 0});
     } catch(e) { cb(e) }
 });
